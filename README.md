@@ -1,10 +1,15 @@
 # Đồ Án Môn Học: Trí Tuệ Nhân Tạo
-## Giải Sudoku Sử Dụng Nhiều Thuật Toán Khác Nhau
+## XÂY DỰNG TRÒ CHƠI SUDOKU ÁP DỤNG THUẬT TOÁN THÔNG MINH
 
 ### Thông Tin Đồ Án
 - **Môn học:** Trí Tuệ Nhân Tạo
 - **Giảng viên:** TS. Phan Thị Huyền Trang
 - **Lớp học phần:** ARIN330585_05
+- **Nhóm:** 14
+- **Thành viên:**
+Huỳnh Thanh Nhân 23110280
+Huỳnh Hoài Phương 23110289
+Lê Thị Thảo 23110321
 
 ### Mục Lục
 1. [Giới Thiệu Về Sudoku](#giới-thiệu-về-sudoku)
@@ -143,6 +148,7 @@ Dự án này nhằm mục đích:
    - Độ tin cậy
 
 ### Hướng Dẫn Sử Dụng
+![Demo 8-puzzer](Huongdan.gif)
 
 #### Yêu Cầu Hệ Thống
 - Python 3.x (Khuyến nghị Python 3.8 trở lên)
