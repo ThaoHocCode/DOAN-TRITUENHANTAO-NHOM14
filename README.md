@@ -7,9 +7,9 @@
 - **Lớp học phần:** ARIN330585_05
 - **Nhóm:** 14
 - **Thành viên:**
-Huỳnh Thanh Nhân 23110280
-Huỳnh Hoài Phương 23110289
-Lê Thị Thảo 23110321
+- **Huỳnh Thanh Nhân 23110280**
+- **Huỳnh Hoài Phương 23110289**
+- **Lê Thị Thảo 23110321**
 
 ### Mục Lục
 1. [Giới Thiệu Về Sudoku](#giới-thiệu-về-sudoku)
