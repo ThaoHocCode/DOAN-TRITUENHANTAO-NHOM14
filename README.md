@@ -148,7 +148,6 @@ Dự án này nhằm mục đích:
    - Độ tin cậy
 
 ### Hướng Dẫn Sử Dụng
-![Demo 8-puzzer](Huongdan.gif)
 
 #### Yêu Cầu Hệ Thống
 - Python 3.x (Khuyến nghị Python 3.8 trở lên)
