@@ -73,36 +73,73 @@ Dự án này nhằm mục đích:
 
 #### 1. DFS (Depth-First Search)
 - **Nguyên lý hoạt động:** Tìm kiếm theo chiều sâu, đi sâu nhất có thể theo một nhánh trước khi quay lui
+- **Công thức:**
+  - Độ phức tạp thời gian: O(b^m), với b là nhân tố nhánh và m là độ sâu tối đa
+  - Độ phức tạp không gian: O(bm)
 - **Ưu điểm:** Sử dụng ít bộ nhớ, hiệu quả cho các bài toán có giải pháp gần gốc
 - **Nhược điểm:** Có thể mất nhiều thời gian cho các bài toán phức tạp
 
 #### 2. BFS (Breadth-First Search)
 - **Nguyên lý hoạt động:** Tìm kiếm theo chiều rộng, khám phá tất cả các nút ở cùng một mức trước khi đi sâu hơn
+- **Công thức:**
+  - Độ phức tạp thời gian: O(b^d), với b là nhân tố nhánh và d là độ sâu của giải pháp
+  - Độ phức tạp không gian: O(b^d)
 - **Ưu điểm:** Tìm được giải pháp ngắn nhất
 - **Nhược điểm:** Tiêu tốn nhiều bộ nhớ
 
 #### 3. Backtracking
 - **Nguyên lý hoạt động:** Quay lui có hệ thống, thử các giá trị có thể và quay lui khi gặp ngõ cụt
+- **Công thức:**
+  - Độ phức tạp thời gian: O(9^(n^2)), với n là kích thước bảng (n=9 cho Sudoku 9x9)
+  - Độ phức tạp không gian: O(n^2)
 - **Ưu điểm:** Hiệu quả cho các bài toán có ràng buộc
 - **Nhược điểm:** Có thể mất nhiều thời gian cho các bài toán phức tạp
 
 #### 4. Simulated Annealing
 - **Nguyên lý hoạt động:** Mô phỏng quá trình ủ kim loại, cho phép chấp nhận các giải pháp tạm thời kém hơn
+- **Công thức:**
+  - Hàm chấp nhận: P(accept) = e^(-ΔE/T)
+  - Nhiệt độ giảm: T(t) = T₀ * α^t
+  - Trong đó:
+    - ΔE: Sự thay đổi năng lượng
+    - T: Nhiệt độ hiện tại
+    - T₀: Nhiệt độ ban đầu
+    - α: Hệ số làm lạnh (0 < α < 1)
+    - t: Bước thời gian
 - **Ưu điểm:** Có thể tìm được giải pháp gần tối ưu
 - **Nhược điểm:** Không đảm bảo tìm được giải pháp tối ưu
 
 #### 5. A* Search
 - **Nguyên lý hoạt động:** Sử dụng hàm heuristic để hướng dẫn tìm kiếm
+- **Công thức:**
+  - f(n) = g(n) + h(n)
+  - Trong đó:
+    - f(n): Tổng chi phí ước tính
+    - g(n): Chi phí thực tế từ nút gốc đến nút n
+    - h(n): Chi phí ước tính từ nút n đến đích
 - **Ưu điểm:** Hiệu quả và đảm bảo tìm được giải pháp tối ưu
 - **Nhược điểm:** Phụ thuộc vào chất lượng của hàm heuristic
 
 #### 6. AND/OR Tree Search
 - **Nguyên lý hoạt động:** Sử dụng cấu trúc cây AND/OR để biểu diễn và giải quyết vấn đề
+- **Công thức:**
+  - Giá trị của nút AND: f(n) = max(f(child))
+  - Giá trị của nút OR: f(n) = min(f(child))
 - **Ưu điểm:** Hiệu quả cho các bài toán có cấu trúc phân cấp
 - **Nhược điểm:** Phức tạp trong việc triển khai
 
 #### 7. Deep Q-Network (DQN)
 - **Nguyên lý hoạt động:** Sử dụng học tăng cường sâu để học cách giải Sudoku
+- **Công thức:**
+  - Hàm mất mát: L(θ) = E[(r + γ max Q(s',a';θ') - Q(s,a;θ))²]
+  - Cập nhật Q-value: Q(s,a) ← Q(s,a) + α[r + γ max Q(s',a') - Q(s,a)]
+  - Trong đó:
+    - θ: Tham số mạng
+    - r: Phần thưởng
+    - γ: Hệ số chiết khấu
+    - α: Tốc độ học
+    - s, a: Trạng thái và hành động hiện tại
+    - s', a': Trạng thái và hành động tiếp theo
 - **Ưu điểm:** Có khả năng học và cải thiện theo thời gian
 - **Nhược điểm:** Yêu cầu nhiều dữ liệu huấn luyện và tài nguyên tính toán
 
