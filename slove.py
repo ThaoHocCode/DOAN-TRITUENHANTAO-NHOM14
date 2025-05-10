@@ -1,4 +1,4 @@
-﻿import statistics
+import statistics
 import time
 import math
 import heapq
@@ -28,15 +28,13 @@ class SudokuSolver:
         self.grid_size = grid_size
         self.box_size = 3 if grid_size == 9 else 4
         
-        # Các thông số hiệu suất
         self.execution_time = 0
         self.states_explored = 0
         self.max_states_in_memory = 0
-        self.h_value = float('inf')  # Giá trị heuristic cuối cùng
-        self.g_value = 0  # Số bước thực hiện
-        self.f_value = float('inf')  # f(n) = g(n) + h(n)
+        self.h_value = float('inf')  
+        self.g_value = 0  
+        self.f_value = float('inf')  
         
-        # Kết quả
         self.solution = None
         self.is_solved = False
     
@@ -58,17 +56,14 @@ class SudokuSolver:
         Returns:
             bool: True nếu hợp lệ, False nếu không
         """
-        # Kiểm tra hàng
         for j in range(self.grid_size):
             if self.board[row][j] == num:
                 return False
         
-        # Kiểm tra cột
         for i in range(self.grid_size):
             if self.board[i][col] == num:
                 return False
         
-        # Kiểm tra hộp
         box_row, box_col = self.box_size * (row // self.box_size), self.box_size * (col // self.box_size)
         for i in range(box_row, box_row + self.box_size):
             for j in range(box_col, box_col + self.box_size):
@@ -113,7 +108,7 @@ class SudokuSolver:
         """
         empty_cells = self.count_empty_cells()
         conflicts = self.count_conflicts()
-        return empty_cells + conflicts * 10  # Xung đột được coi là nghiêm trọng hơn
+        return empty_cells + conflicts * 10  
     
     def count_conflicts(self):
         """
@@ -124,7 +119,6 @@ class SudokuSolver:
         """
         conflicts = 0
         
-        # Kiểm tra xung đột trong hàng
         for i in range(self.grid_size):
             values = [0] * (self.grid_size + 1)
             for j in range(self.grid_size):
@@ -134,7 +128,6 @@ class SudokuSolver:
                 if val > 1:
                     conflicts += val - 1
         
-        # Kiểm tra xung đột trong cột
         for j in range(self.grid_size):
             values = [0] * (self.grid_size + 1)
             for i in range(self.grid_size):
@@ -144,7 +137,6 @@ class SudokuSolver:
                 if val > 1:
                     conflicts += val - 1
         
-        # Kiểm tra xung đột trong hộp
         for box_row in range(0, self.grid_size, self.box_size):
             for box_col in range(0, self.grid_size, self.box_size):
                 values = [0] * (self.grid_size + 1)
@@ -209,16 +201,14 @@ class DFSSolver(SudokuSolver):
         self.states_explored = 0
         self.max_states_in_memory = 0
         
-        # Thực hiện DFS
         result = self._dfs()
         
         self.execution_time = time.time() - start_time
         self.is_solved = result
         self.solution = copy.deepcopy(self.board) if result else None
         
-        # Cập nhật các giá trị heuristic cuối cùng
         if result:
-            self.h_value = 0  # Không còn ô trống
+            self.h_value = 0  
         else:
             self.h_value = self.calculate_heuristic()
         
@@ -238,24 +228,19 @@ class DFSSolver(SudokuSolver):
         # Tìm ô trống
         empty_cell = self.find_empty()
         if not empty_cell:
-            return True  # Đã điền hết bảng
+            return True  
         
         row, col = empty_cell
         
-        # Tìm các giá trị có thể điền vào ô này (tối ưu hóa)
         possible_values = self.get_possible_values(row, col)
         
-        # Thử từng giá trị
         for num in possible_values:
-            # Đặt giá trị vào ô
             self.board[row][col] = num
             self.g_value += 1
             
-            # Đệ quy để tiếp tục điền các ô khác
             if self._dfs():
                 return True
             
-            # Nếu không thành công, quay lui
             self.board[row][col] = 0
             self.g_value -= 1
         
@@ -278,16 +263,14 @@ class BFSSolver(SudokuSolver):
         self.states_explored = 0
         self.max_states_in_memory = 0
         
-        # Thực hiện BFS
         result = self._bfs()
         
         self.execution_time = time.time() - start_time
         self.is_solved = result
         self.solution = copy.deepcopy(self.board) if result else None
         
-        # Cập nhật các giá trị heuristic cuối cùng
         if result:
-            self.h_value = 0  # Không còn ô trống
+            self.h_value = 0  
         else:
             self.h_value = self.calculate_heuristic()
         
@@ -302,15 +285,12 @@ class BFSSolver(SudokuSolver):
         Returns:
             bool: True nếu tìm thấy lời giải, False nếu không
         """
-        # Tìm ô trống đầu tiên
         empty_cell = self.find_empty()
         if not empty_cell:
-            return True  # Đã điền hết bảng
+            return True  
         
-        # Khởi tạo hàng đợi với trạng thái ban đầu
         queue = deque([(copy.deepcopy(self.board), 0)])  # (board, g_value)
         
-        # Tập hợp các trạng thái đã xem xét (để tránh trùng lặp)
         visited = set()
         
         while queue:
@@ -319,28 +299,23 @@ class BFSSolver(SudokuSolver):
             current_board, g_value = queue.popleft()
             self.states_explored += 1
             
-            # Chuyển bảng thành chuỗi để kiểm tra trùng lặp
             board_str = str(current_board)
             if board_str in visited:
                 continue
             
             visited.add(board_str)
             
-            # Cập nhật bảng hiện tại
             self.board = copy.deepcopy(current_board)
             self.g_value = g_value
             
-            # Tìm ô trống tiếp theo
             empty_cell = self.find_empty()
             if not empty_cell:
-                return True  # Đã điền hết bảng
+                return True  
             
             row, col = empty_cell
             
-            # Tìm các giá trị có thể điền vào ô này
             possible_values = self.get_possible_values(row, col)
             
-            # Thêm các trạng thái mới vào hàng đợi
             for num in possible_values:
                 new_board = copy.deepcopy(current_board)
                 new_board[row][col] = num
@@ -363,18 +338,16 @@ class BacktrackingSolver(SudokuSolver):
         """
         start_time = time.time()
         self.states_explored = 0
-        self.max_states_in_memory = 1  # Backtracking chỉ lưu một trạng thái tại một thời điểm
+        self.max_states_in_memory = 1  
         
-        # Thực hiện Backtracking
         result = self._backtrack()
         
         self.execution_time = time.time() - start_time
         self.is_solved = result
         self.solution = copy.deepcopy(self.board) if result else None
         
-        # Cập nhật các giá trị heuristic cuối cùng
         if result:
-            self.h_value = 0  # Không còn ô trống
+            self.h_value = 0  
         else:
             self.h_value = self.calculate_heuristic()
         
@@ -404,7 +377,6 @@ class BacktrackingSolver(SudokuSolver):
                         best_cell = (i, j)
                         best_values = possible_values
                         
-                        # Nếu chỉ có một giá trị có thể, chọn ngay
                         if num_possibilities == 1:
                             return (i, j, best_values)
         
@@ -421,28 +393,22 @@ class BacktrackingSolver(SudokuSolver):
         """
         self.states_explored += 1
         
-        # Tìm ô trống tốt nhất (ít giá trị có thể nhất)
         best_empty = self._find_best_empty_cell()
         if not best_empty:
-            return True  # Đã điền hết bảng
+            return True  
         
         row, col, possible_values = best_empty
         
-        # Nếu không có giá trị nào có thể điền, quay lui
         if not possible_values:
             return False
         
-        # Thử từng giá trị
         for num in possible_values:
-            # Đặt giá trị vào ô
             self.board[row][col] = num
             self.g_value += 1
             
-            # Đệ quy để tiếp tục điền các ô khác
             if self._backtrack():
                 return True
             
-            # Nếu không thành công, quay lui
             self.board[row][col] = 0
             self.g_value -= 1
         
@@ -464,27 +430,22 @@ class SimulatedAnnealingSolver(SudokuSolver):
         """
         start_time = time.time()
         self.states_explored = 0
-        self.max_states_in_memory = 1  # SA chỉ lưu một trạng thái tại một thời điểm
+        self.max_states_in_memory = 1 
         
-        # Lưu lại bảng ban đầu để biết ô nào là cố định
         fixed_cells = self._create_fixed_cells()
         
-        # Tạo danh sách các khối (3x3 hoặc 4x4 tùy theo kích thước grid)
         list_of_blocks = self._create_list_of_blocks()
         
-        # Khởi tạo bảng với các giá trị hợp lệ trong mỗi khối
         self._randomly_fill_blocks(fixed_cells, list_of_blocks)
         
-        # Thực hiện Simulated Annealing
         result = self._simulated_annealing(fixed_cells, list_of_blocks)
         
         self.execution_time = time.time() - start_time
         self.is_solved = result
         self.solution = copy.deepcopy(self.board) if result else None
         
-        # Cập nhật các giá trị heuristic cuối cùng
         if result:
-            self.h_value = 0  # Không còn xung đột
+            self.h_value = 0  
         else:
             self.h_value = self._calculate_number_of_errors()
         
@@ -515,7 +476,6 @@ class SimulatedAnnealingSolver(SudokuSolver):
             list: Danh sách các khối
         """
         final_list_of_blocks = []
-        # Xác định kích thước khối dựa trên kích thước lưới
         block_size = self.box_size
         
         for r in range(0, self.grid_size):
@@ -538,13 +498,11 @@ class SimulatedAnnealingSolver(SudokuSolver):
         """
         for block in list_of_blocks:
             for box in block:
-                if self.board[box[0]][box[1]] == 0:  # Nếu ô trống
-                    # Lấy các giá trị hiện có trong khối
+                if self.board[box[0]][box[1]] == 0:  
                     current_block_values = []
                     for b in block:
                         current_block_values.append(self.board[b[0]][b[1]])
                     
-                    # Chọn một giá trị ngẫu nhiên không trùng với các giá trị đã có
                     possible_values = [i for i in range(1, self.grid_size + 1) if i not in current_block_values]
                     if possible_values:
                         self.board[box[0]][box[1]] = random.choice(possible_values)
@@ -572,12 +530,10 @@ class SimulatedAnnealingSolver(SudokuSolver):
         Returns:
             int: Số lỗi trong hàng và cột
         """
-        # Tính số lỗi trong cột (số giá trị duy nhất thiếu đi từ tổng giá trị)
         col_values = [self.board[i][column] for i in range(self.grid_size) if self.board[i][column] != 0]
         unique_col_values = set(col_values)
         col_errors = len(col_values) - len(unique_col_values)
         
-        # Tính số lỗi trong hàng
         row_values = [self.board[row][j] for j in range(self.grid_size) if self.board[row][j] != 0]
         unique_row_values = set(row_values)
         row_errors = len(row_values) - len(unique_row_values)
@@ -615,10 +571,8 @@ class SimulatedAnnealingSolver(SudokuSolver):
         Returns:
             list: Bảng Sudoku sau khi hoán đổi
         """
-        # Tạo bản sao của bảng hiện tại
         proposed_board = copy.deepcopy(self.board)
         
-        # Hoán đổi giá trị
         place_holder = proposed_board[boxes_to_flip[0][0]][boxes_to_flip[0][1]]
         proposed_board[boxes_to_flip[0][0]][boxes_to_flip[0][1]] = proposed_board[boxes_to_flip[1][0]][boxes_to_flip[1][1]]
         proposed_board[boxes_to_flip[1][0]][boxes_to_flip[1][1]] = place_holder
@@ -636,31 +590,19 @@ class SimulatedAnnealingSolver(SudokuSolver):
         Returns:
             tuple: (bảng mới, các ô đã hoán đổi) hoặc (bảng hiện tại, None) nếu không thể tạo trạng thái mới
         """
-        # Xáo trộn danh sách khối để không luôn chọn khối đầu tiên
         shuffled_blocks = random.sample(list_of_blocks, len(list_of_blocks))
         
         for random_block in shuffled_blocks:
-            # Tính số ô cố định trong khối
             fixed_count = sum(fixed_cells[box[0]][box[1]] for box in random_block)
-            
-            # Ngưỡng khác nhau cho lưới 9x9 và 16x16
             max_fixed = 6 if self.grid_size == 9 else 12
-            
-            # Nếu khối có quá nhiều ô cố định, thử khối khác
             if fixed_count > max_fixed:
                 continue
-                
-            # Chọn hai ô không cố định để hoán đổi
             boxes_to_flip = self._two_random_boxes_within_block(fixed_cells, random_block)
-            
             if boxes_to_flip:
-                # Tạo bảng mới sau khi hoán đổi
                 proposed_board = self._flip_boxes(boxes_to_flip)
                 return proposed_board, boxes_to_flip
-        
-        # Không tìm thấy khối phù hợp
         return self.board, None
-    
+
     def _choose_new_state(self, fixed_cells, list_of_blocks, sigma):
         """
         Quyết định chấp nhận trạng thái mới hay không dựa trên chi phí và nhiệt độ.
@@ -673,41 +615,30 @@ class SimulatedAnnealingSolver(SudokuSolver):
         Returns:
             tuple: (bảng mới, thay đổi chi phí)
         """
-        # Tạo trạng thái đề xuất
         proposed_board, boxes_to_flip = self._proposed_state(fixed_cells, list_of_blocks)
         
-        # Nếu không tìm được trạng thái mới, giữ nguyên trạng thái hiện tại
         if boxes_to_flip is None:
             return self.board, 0
         
-        # Lưu trữ bảng hiện tại
         current_board = copy.deepcopy(self.board)
         
-        # Tính chi phí hiện tại chỉ cho các hàng và cột liên quan
         current_cost = 0
         for box in boxes_to_flip:
             current_cost += self._calculate_errors_row_column(box[0], box[1])
         
-        # Cập nhật bảng tạm thời để tính chi phí mới
         self.board = proposed_board
         
-        # Tính chi phí mới chỉ cho các hàng và cột liên quan
         new_cost = 0
         for box in boxes_to_flip:
             new_cost += self._calculate_errors_row_column(box[0], box[1])
         
-        # Tính sự thay đổi chi phí
         cost_difference = new_cost - current_cost
         
-        # Xác suất chấp nhận theo công thức Metropolis
         rho = math.exp(-cost_difference / sigma)
         
-        # Quyết định chấp nhận hay từ chối
         if random.uniform(0, 1) < rho:
-            # Chấp nhận trạng thái mới
             return proposed_board, cost_difference
         else:
-            # Từ chối, quay lại trạng thái cũ
             self.board = current_board
             return current_board, 0
     
@@ -725,26 +656,21 @@ class SimulatedAnnealingSolver(SudokuSolver):
         list_of_differences = []
         current_board = copy.deepcopy(self.board)
         
-        # Lưu trữ bảng hiện tại
         tmp_board = copy.deepcopy(self.board)
         
-        for i in range(10):  # Tạo 10 trạng thái ngẫu nhiên để tính toán
-            # Tạo trạng thái đề xuất
+        for i in range(10): 
             proposed_board, boxes_to_flip = self._proposed_state(fixed_cells, list_of_blocks)
             
             if boxes_to_flip:
-                # Cập nhật bảng tạm thời
                 self.board = proposed_board
                 list_of_differences.append(self._calculate_number_of_errors())
         
-        # Khôi phục bảng
         self.board = tmp_board
         
-        # Tính độ lệch chuẩn
         if len(list_of_differences) > 1:
             return statistics.pstdev(list_of_differences)
         else:
-            return 1.0  # Giá trị mặc định nếu không đủ dữ liệu
+            return 1.0  
     
     def _choose_number_of_iterations(self, fixed_cells):
         """
@@ -757,7 +683,6 @@ class SimulatedAnnealingSolver(SudokuSolver):
             int: Số lần lặp
         """
         fixed_count = sum(sum(row) for row in fixed_cells)
-        # Đảm bảo số lần lặp tăng theo kích thước lưới
         base_iterations = 100
         if self.grid_size == 16:
             base_iterations = 200
@@ -783,33 +708,26 @@ class SimulatedAnnealingSolver(SudokuSolver):
             attempts += 1
             self.states_explored += 1
             
-            # Khôi phục bảng ban đầu và điền ngẫu nhiên ở mỗi lần thử
             if attempts > 1:
                 self.board = [[0 if fixed_cells[i][j] == 0 else self.board[i][j] 
                               for j in range(self.grid_size)] 
                               for i in range(self.grid_size)]
                 self._randomly_fill_blocks(fixed_cells, list_of_blocks)
             
-            # Các tham số cho thuật toán
             decrease_factor = 0.99
             stuck_count = 0
             
-            # Tính sigma ban đầu
             sigma = self._calculate_initial_sigma(fixed_cells, list_of_blocks)
             
-            # Tính chi phí hiện tại
             score = self._calculate_number_of_errors()
             
-            # Số lần lặp
             iterations = self._choose_number_of_iterations(fixed_cells)
             
-            # Kiểm tra nếu đã tìm được lời giải
             if score <= 0:
                 solution_found = True
                 break
             
-            # Vòng lặp chính của thuật toán
-            max_loops = 500  # Giới hạn số vòng lặp chính
+            max_loops = 500  
             current_loop = 0
             
             while not solution_found and current_loop < max_loops:
@@ -817,46 +735,36 @@ class SimulatedAnnealingSolver(SudokuSolver):
                 previous_score = score
                 
                 for i in range(iterations):
-                    # Chọn trạng thái mới
                     new_board, score_diff = self._choose_new_state(fixed_cells, list_of_blocks, sigma)
                     
-                    # Cập nhật bảng và chi phí
                     self.board = new_board
                     score += score_diff
                     
-                    # Ghi lại trạng thái
                     self.states_explored += 1
                     self.g_value += 1 if score_diff != 0 else 0
                     
-                    # Kiểm tra nếu đã tìm được lời giải
                     if score <= 0:
                         solution_found = True
                         break
                 
-                # Giảm nhiệt độ
                 sigma *= decrease_factor
                 
-                # Kiểm tra nếu đã tìm được lời giải
                 if score <= 0:
                     solution_found = True
                     break
                 
-                # Kiểm tra nếu bị mắc kẹt
                 if score >= previous_score:
                     stuck_count += 1
                 else:
                     stuck_count = 0
                 
-                # Tăng nhiệt độ nếu bị mắc kẹt quá lâu
                 if stuck_count > 80:
                     sigma += 2
                 
-                # Kiểm tra lại nếu đã tìm được lời giải
                 if self._calculate_number_of_errors() == 0:
                     solution_found = True
                     break
                 
-                # Tránh vòng lặp vô hạn
                 if sigma < 0.001:
                     break
         
@@ -879,16 +787,14 @@ class AStarSolver(SudokuSolver):
         self.states_explored = 0
         self.max_states_in_memory = 0
         
-        # Thực hiện A*
         result = self._astar()
         
         self.execution_time = time.time() - start_time
         self.is_solved = result
         self.solution = copy.deepcopy(self.board) if result else None
         
-        # Cập nhật các giá trị heuristic cuối cùng
         if result:
-            self.h_value = 0  # Không còn ô trống
+            self.h_value = 0  
         else:
             self.h_value = self.calculate_heuristic()
         
@@ -903,59 +809,47 @@ class AStarSolver(SudokuSolver):
         Returns:
             bool: True nếu tìm thấy lời giải, False nếu không
         """
-        # Tìm ô trống đầu tiên
         empty_cell = self.find_empty()
         if not empty_cell:
-            return True  # Đã điền hết bảng
+            return True  
         
-        # Khởi tạo hàng đợi ưu tiên với trạng thái ban đầu
-        # Mỗi phần tử là (f_value, g_value, board)
         priority_queue = [(self.calculate_heuristic(), 0, copy.deepcopy(self.board))]
         heapq.heapify(priority_queue)
         
-        # Tập hợp các trạng thái đã xem xét (để tránh trùng lặp)
         visited = set()
         
         while priority_queue:
             self.max_states_in_memory = max(self.max_states_in_memory, len(priority_queue))
             
-            # Lấy trạng thái có f_value nhỏ nhất
             f_value, g_value, current_board = heapq.heappop(priority_queue)
             self.states_explored += 1
             
-            # Chuyển bảng thành chuỗi để kiểm tra trùng lặp
             board_str = str(current_board)
             if board_str in visited:
                 continue
             
             visited.add(board_str)
             
-            # Cập nhật bảng hiện tại
             self.board = copy.deepcopy(current_board)
             self.g_value = g_value
             
-            # Tìm ô trống tiếp theo
             empty_cell = self.find_empty()
             if not empty_cell:
-                return True  # Đã điền hết bảng
+                return True  
             
             row, col = empty_cell
             
-            # Tìm các giá trị có thể điền vào ô này
             possible_values = self.get_possible_values(row, col)
             
-            # Thêm các trạng thái mới vào hàng đợi ưu tiên
             for num in possible_values:
                 new_board = copy.deepcopy(current_board)
                 new_board[row][col] = num
                 
-                # Tính các giá trị heuristic
                 self.board = new_board
                 h_value = self.calculate_heuristic()
                 new_g_value = g_value + 1
                 f_value = h_value + new_g_value
                 
-                # Thêm vào hàng đợi ưu tiên
                 heapq.heappush(priority_queue, (f_value, new_g_value, new_board))
         
         return False
@@ -981,18 +875,15 @@ class AndOrTreeSolver(SudokuSolver):
         self.recursion_depth = 0
         self.max_recursion_depth = 0
         
-        # Kiểm tra bảng ban đầu có hợp lệ không
         if not self._is_valid_initial_board():
             self.execution_time = time.time() - start_time
             self.is_solved = False
             return False
         
-        # Khởi tạo các cấu trúc dữ liệu để theo dõi các giá trị đã sử dụng
         self.used_in_row = [set() for _ in range(self.grid_size)]
         self.used_in_col = [set() for _ in range(self.grid_size)]
         self.used_in_box = [[set() for _ in range(self.box_size)] for _ in range(self.box_size)]
         
-        # Điền các giá trị đã có vào cấu trúc theo dõi
         for i in range(self.grid_size):
             for j in range(self.grid_size):
                 num = self.board[i][j]
@@ -1001,16 +892,14 @@ class AndOrTreeSolver(SudokuSolver):
                     self.used_in_col[j].add(num)
                     self.used_in_box[i // self.box_size][j // self.box_size].add(num)
         
-        # Thực hiện tìm kiếm AND-OR tree
         result = self._and_or_search()
         
         self.execution_time = time.time() - start_time
         self.is_solved = result
         self.solution = copy.deepcopy(self.board) if result else None
         
-        # Cập nhật các giá trị heuristic cuối cùng
         if result:
-            self.h_value = 0  # Không còn ô trống hoặc xung đột
+            self.h_value = 0  
         else:
             self.h_value = self.calculate_heuristic()
         
@@ -1025,7 +914,6 @@ class AndOrTreeSolver(SudokuSolver):
         Returns:
             bool: True nếu bảng ban đầu hợp lệ, False nếu không
         """
-        # Kiểm tra từng hàng
         for row in range(self.grid_size):
             values = {}
             for col in range(self.grid_size):
@@ -1035,7 +923,6 @@ class AndOrTreeSolver(SudokuSolver):
                         return False
                     values[val] = True
         
-        # Kiểm tra từng cột
         for col in range(self.grid_size):
             values = {}
             for row in range(self.grid_size):
@@ -1045,7 +932,6 @@ class AndOrTreeSolver(SudokuSolver):
                         return False
                     values[val] = True
         
-        # Kiểm tra từng hộp
         for box_row in range(0, self.grid_size, self.box_size):
             for box_col in range(0, self.grid_size, self.box_size):
                 values = {}
@@ -1074,7 +960,6 @@ class AndOrTreeSolver(SudokuSolver):
         for i in range(self.grid_size):
             for j in range(self.grid_size):
                 if self.board[i][j] == 0:
-                    # Tìm các giá trị có thể điền vào ô này
                     possible_values = self._get_possible_values_fast(i, j)
                     num_possibilities = len(possible_values)
                     
@@ -1083,17 +968,15 @@ class AndOrTreeSolver(SudokuSolver):
                         best_cell = (i, j)
                         best_values = possible_values
                         
-                        # Nếu chỉ có một giá trị có thể, chọn ngay
                         if num_possibilities == 1:
                             return (i, j, best_values)
                     
-                    # Nếu không còn giá trị hợp lệ cho ô này, trả về ngay
                     if num_possibilities == 0:
                         return (i, j, [])
         
         if best_cell:
             return (*best_cell, best_values)
-        return None  # Không còn ô trống
+        return None  
     
     def _get_possible_values_fast(self, row, col):
         """
@@ -1106,13 +989,11 @@ class AndOrTreeSolver(SudokuSolver):
         Returns:
             list: Danh sách các giá trị hợp lệ
         """
-        # Tập hợp các giá trị đã sử dụng trong hàng, cột và hộp
         used_values = self.used_in_row[row].union(
             self.used_in_col[col],
             self.used_in_box[row // self.box_size][col // self.box_size]
         )
         
-        # Các giá trị có thể là các giá trị từ 1 đến grid_size mà chưa được sử dụng
         return [num for num in range(1, self.grid_size + 1) if num not in used_values]
     
     def _place_and_check(self, row, col, num):
@@ -1127,15 +1008,12 @@ class AndOrTreeSolver(SudokuSolver):
         Returns:
             bool: True nếu đặt thành công và tất cả ràng buộc đều thỏa mãn, False nếu không
         """
-        # Đặt giá trị vào ô
         self.board[row][col] = num
         
-        # Cập nhật các cấu trúc theo dõi
         self.used_in_row[row].add(num)
         self.used_in_col[col].add(num)
         self.used_in_box[row // self.box_size][col // self.box_size].add(num)
         
-        # Tăng bộ đếm g_value (số bước)
         self.g_value += 1
         
         return True
@@ -1149,15 +1027,12 @@ class AndOrTreeSolver(SudokuSolver):
             col: Chỉ số cột
             num: Giá trị cần xóa
         """
-        # Xóa giá trị khỏi các cấu trúc theo dõi
         self.used_in_row[row].remove(num)
         self.used_in_col[col].remove(num)
         self.used_in_box[row // self.box_size][col // self.box_size].remove(num)
         
-        # Xóa giá trị khỏi ô
         self.board[row][col] = 0
         
-        # Giảm bộ đếm g_value
         self.g_value -= 1
     
     def _and_or_search(self):
@@ -1169,45 +1044,33 @@ class AndOrTreeSolver(SudokuSolver):
         Returns:
             bool: True nếu tìm thấy lời giải, False nếu không
         """
-        # Tăng độ sâu đệ quy
         self.recursion_depth += 1
         self.max_recursion_depth = max(self.max_recursion_depth, self.recursion_depth)
         
-        # Cập nhật max_states_in_memory
         self.max_states_in_memory = max(self.max_states_in_memory, self.max_recursion_depth)
         
-        # Tìm ô trống tốt nhất (MRV)
         best_empty = self._find_best_empty_cell()
         
-        # Nếu không còn ô trống, đã tìm thấy lời giải
         if not best_empty:
             self.recursion_depth -= 1
             return True
         
-        # Lấy thông tin ô trống và các giá trị có thể
         row, col, possible_values = best_empty
         
-        # Nếu không có giá trị nào có thể điền, quay lui
         if not possible_values:
             self.recursion_depth -= 1
             return False
         
-        # Duyệt qua các giá trị có thể (nút OR)
         for num in possible_values:
-            # Tăng số trạng thái đã khám phá
             self.states_explored += 1
             
-            # Đặt giá trị và kiểm tra các ràng buộc (nút AND)
             if self._place_and_check(row, col, num):
-                # Tiếp tục đệ quy nếu tất cả ràng buộc đều thỏa mãn
                 if self._and_or_search():
                     self.recursion_depth -= 1
                     return True
                 
-                # Nếu không tìm thấy lời giải, quay lui
                 self._remove_value(row, col, num)
         
-        # Không tìm thấy lời giải với tất cả các nhánh OR
         self.recursion_depth -= 1
         return False
 
