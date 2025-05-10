@@ -1,4 +1,4 @@
-﻿import time
+import time
 import copy 
 
 class SudokuController:
@@ -43,7 +43,6 @@ class SudokuController:
                 self.model.completion_time = self.model.end_time - self.model.start_time
                 self.view.show_success(self.model.completion_time)
         else:
-            # Xử lý nước đi sai - trừ mạng bất kể tính hợp lệ của quy tắc Sudoku
             self.model.lives -= 1  
             self.view.update_lives_display(self.model.lives)  
         
@@ -76,21 +75,18 @@ class SudokuController:
         hint = self.model.get_hint()
         if hint:
             row, col, value = hint
-            # Với lưới 16x16, chuyển đổi số 10-16 thành chữ cái A-G
             if self.model.grid_size == 16 and value > 9:
                 display_value = chr(ord('A') + value - 10)
                 self.view.cell_vars[row][col].set(display_value)
             else:
                 self.view.cell_vars[row][col].set(str(value))
             
-            self.model.board[row][col] = value  # Cập nhật giá trị trong model
+            self.model.board[row][col] = value  
             self.view.highlight_cell(row, col, self.view.highlight_color)
             
-            # Điều chỉnh hiển thị vị trí để dễ đọc (đánh số từ 1)
             display_value = value if value <= 9 else chr(ord('A') + value - 10)
             self.view.update_status(f"Gợi ý: Đặt {display_value} tại vị trí ({row+1},{col+1})")
             
-            # Kiểm tra xem câu đố đã được giải sau khi sử dụng gợi ý
             if self.model.is_solved():
                 self.model.end_time = time.time()
                 self.model.completion_time = self.model.end_time - self.model.start_time
@@ -103,11 +99,9 @@ class SudokuController:
         errors_found = False
         for i in range(self.model.grid_size):
             for j in range(self.model.grid_size):
-                # Bỏ qua ô trống và ô gốc
                 if self.model.board[i][j] == 0 or (i, j) in self.view.original_cells:
                     continue
                     
-                # Kiểm tra xem giá trị hiện tại có đúng không
                 if not self.model.is_correct_move(i, j, self.model.board[i][j]):
                     self.view.highlight_cell(i, j, self.view.error_color)
                     errors_found = True
@@ -125,15 +119,12 @@ class SudokuController:
     def solve_puzzle(self):
         """Giải toàn bộ câu đố"""
         if self.view.confirm_dialog("Giải câu đố", "Bạn có chắc muốn xem lời giải? Điều này sẽ kết thúc trò chơi hiện tại."):
-            # Điền vào lời giải
             for i in range(self.model.grid_size):
                 for j in range(self.model.grid_size):
-                    # Chỉ điền vào ô trống
                     if self.model.board[i][j] == 0:
                         value = self.model.solution[i][j]
                         self.model.board[i][j] = value
                         
-                        # Với lưới 16x16, sử dụng chữ cái cho 10-16
                         if self.model.grid_size == 16 and value > 9:
                             self.view.cell_vars[i][j].set(chr(ord('A') + value - 10))
                         else:
@@ -141,14 +132,12 @@ class SudokuController:
                         
                         self.view.highlight_cell(i, j, self.view.highlight_color)
             
-            # Kết thúc trò chơi
             self.model.game_active = False
             self.view.update_status("Câu đố đã được giải. Bắt đầu trò chơi mới để chơi lại.")
     
     def clear_board(self):
         """Xóa tất cả đầu vào của người dùng và thuật toán, khôi phục bảng ban đầu"""
         if self.view.confirm_dialog("Xóa bảng", "Bạn có chắc muốn xóa tất cả đầu vào và khôi phục bảng ban đầu?"):
-            # Khôi phục bảng về trạng thái ban đầu
             self.model.board = copy.deepcopy(self.initial_board)
             self._update_view()
             self.view.update_status("Đã khôi phục bảng về trạng thái ban đầu.")
@@ -160,7 +149,6 @@ class SudokuController:
             self.view.cell_vars[row][col].set("")
             self.view.highlight_cell(row, col, "white")
 
-    # Thêm phương thức mới để giải bằng thuật toán được chọn
     def solve_with_algorithm(self, algorithm):
         """
         Giải Sudoku bằng thuật toán được chọn.
@@ -169,22 +157,16 @@ class SudokuController:
             self.view.show_error("Game Over", "Bạn đã hết mạng. Hãy bắt đầu trò chơi mới.")
             return
     
-        # Hiển thị thông báo đang giải
         self.view.update_status(f"Đang giải bằng thuật toán {algorithm}...")
     
-        # Giải Sudoku bằng thuật toán được chọn
         solution, metrics = self.model.solve_with_algorithm(algorithm)
     
         if solution:
-            # Cập nhật bảng với lời giải
             self.model.board = solution
             self._update_view()
-            # Hiển thị thông báo thành công
             self.view.update_status(f"Đã giải thành công bằng thuật toán {algorithm}!")
-            # Hiển thị kết quả so sánh thuật toán
             self.view.show_algorithm_comparison(metrics)
         else:
-            # Hiển thị thông báo không tìm thấy lời giải
             self.view.show_error("Không tìm thấy lời giải", 
                                 f"Thuật toán {algorithm} không tìm thấy lời giải cho câu đố này.")
 
