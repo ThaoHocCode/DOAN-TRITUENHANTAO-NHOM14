@@ -1,4 +1,4 @@
-﻿import tkinter as tk
+import tkinter as tk
 from tkinter import ttk, messagebox, StringVar, Frame, Label, Button, Entry, Toplevel
 import ttkbootstrap as ttkb  
 from ttkbootstrap.constants import *
@@ -79,7 +79,6 @@ class GameScreen:
         self.master = master
         self.master.title("Sudoku Game")
         
-        # Màu sắc
         self.bg_color = "#F0F0F0"
         self.fg_color = "#333333"
         self.highlight_color = "#FFEB99"  
@@ -99,14 +98,11 @@ class GameScreen:
         
         self.grid_size = grid_size
         
-        # Tạo giao diện
         self._create_header()
         self._create_info_panel()
         self._create_board()
         self._create_controls()
         self._create_status_bar()
-        
-        # Bắt đầu bộ đếm thời gian
         self._update_timer()
     
     def _create_header(self):
@@ -114,12 +110,10 @@ class GameScreen:
         header_frame = Frame(self.master, bg=self.bg_color)
         header_frame.pack(fill="x", padx=10, pady=5)
         
-        # Nút quay lại
         self.back_button = Button(header_frame, text="Quay lại", font=("Arial", 10),
                                  command=self._on_back, bg="#E74C3C", fg="white")
         self.back_button.pack(side="left", padx=5)
         
-        # Tiêu đề
         Label(header_frame, text="SUDOKU", font=("Arial", 18, "bold"),
              bg=self.bg_color, fg=self.fg_color).pack(side="top", pady=5)
     
@@ -128,12 +122,10 @@ class GameScreen:
         info_frame = Frame(self.master, bg=self.bg_color)
         info_frame.pack(fill="x", padx=10, pady=5)
         
-        # Hiển thị thời gian
         timer_label = Label(info_frame, textvariable=self.timer_var, 
                           font=("Arial", 12, "bold"), bg=self.bg_color, fg="#2980B9")
         timer_label.pack(side="left", padx=20)
         
-        # Hiển thị mạng
         lives_label = Label(info_frame, textvariable=self.lives_var, 
                           font=("Arial", 12, "bold"), bg=self.bg_color, fg="#E74C3C")
         lives_label.pack(side="right", padx=20)
@@ -147,17 +139,14 @@ class GameScreen:
         self.board_frame = Frame(self.master, bg="black", padx=2, pady=2)
         self.board_frame.pack(padx=10, pady=10)
     
-        # Tạo lưới ô
         self.cells = []
         self.cell_vars = []
     
-        # Xác định kích thước ô dựa trên kích thước lưới
         box_size = 3 if self.grid_size == 9 else 4
     
-        # Điều chỉnh kích thước ô và cỡ chữ
-        cell_font_size = 18 if self.grid_size == 9 else 14  # Tăng cỡ chữ cho 16x16
-        cell_width = 2 if self.grid_size == 9 else 1        # Giữ ô hẹp để tránh chật chội
-        cell_pixel_width = 40 if self.grid_size == 9 else 35  # Tăng kích thước ô cho 16x16
+        cell_font_size = 18 if self.grid_size == 9 else 14  
+        cell_width = 2 if self.grid_size == 9 else 1        
+        cell_pixel_width = 40 if self.grid_size == 9 else 35  
         cell_pixel_height = 40 if self.grid_size == 9 else 35
     
         for i in range(self.grid_size):
@@ -172,13 +161,12 @@ class GameScreen:
                                   padx=1, pady=1)
                 cell_frame.grid(row=i, column=j, padx=1, pady=1)
             
-                # Tăng độ dày đường viền giữa các hộp (3x3 hoặc 4x4)
                 if i % box_size == 0 and i > 0:
-                    cell_frame.grid(pady=(5, 1))  # Đường trên dày hơn
+                    cell_frame.grid(pady=(5, 1))  
                 if j % box_size == 0 and j > 0:
-                    cell_frame.grid(padx=(5, 1))  # Đường trái dày hơn
+                    cell_frame.grid(padx=(5, 1))  
                 if i % box_size == 0 and i > 0 and j % box_size == 0 and j > 0:
-                    cell_frame.grid(padx=(15, 1), pady=(15, 1))  # Góc dày hơn
+                    cell_frame.grid(padx=(15, 1), pady=(15, 1))  
             
                 cell_var = StringVar()
             
@@ -189,10 +177,8 @@ class GameScreen:
             
                 cell.pack(fill="both", expand=True)
             
-                # Lưu vị trí ô
                 cell.position = (i, j)
             
-                # Gắn sự kiện
                 cell.bind("<FocusIn>", lambda e, pos=(i, j): self._on_cell_focus(pos))
                 cell.bind("<KeyRelease>", lambda e, pos=(i, j): self._on_cell_input(e, pos))
             
@@ -202,33 +188,28 @@ class GameScreen:
             self.cells.append(row_cells)
             self.cell_vars.append(row_vars)
     
-        # Điều chỉnh kích thước cửa sổ cho lưới 16x16
         if self.grid_size == 16:
-            self.master.geometry("900x850")  # Tăng kích thước cửa sổ cho 16x16
+            self.master.geometry("900x850")  
         else:
-            self.master.geometry("875x670")  # Kích thước mặc định cho 9x9
+            self.master.geometry("875x670")  
     
     def _create_controls(self):
         """Tạo các nút điều khiển"""
         controls_frame = Frame(self.master, bg=self.bg_color, pady=10)
         controls_frame.pack(fill="x")
     
-        # Nút trợ giúp
         help_btn = Button(controls_frame, text="Trợ giúp", font=("Arial", 12),
                         command=self._show_instructions, bg="#2980B9", fg="white", width=10)
         help_btn.pack(side="left", padx=10)
     
-        # Nút gợi ý
         hint_btn = Button(controls_frame, text="Gợi ý", font=("Arial", 12),
                         command=self._on_hint, bg="#3498DB", fg="white", width=10)
         hint_btn.pack(side="left", padx=10)
     
-        # Nút kiểm tra
         check_btn = Button(controls_frame, text="Kiểm tra", font=("Arial", 12),
                         command=self._on_check, bg="#E67E22", fg="white", width=12)
         check_btn.pack(side="left", padx=10)
     
-        # Thêm combobox chọn thuật toán giải
         ttk.Label(controls_frame, text="Thuật toán:", font=("Arial", 12), 
                   background=self.bg_color).pack(side="left", padx=10)
     
@@ -238,17 +219,14 @@ class GameScreen:
                              state="readonly", width=12)
         algorithm_menu.pack(side="left", padx=5)
     
-        # Nút giải
         solve_btn = Button(controls_frame, text="Giải", font=("Arial", 12),
                         command=self._on_solve, bg="#9B59B6", fg="white", width=10)
         solve_btn.pack(side="left", padx=10)
     
-        # Nút xóa
         clear_btn = Button(controls_frame, text="Xóa", font=("Arial", 12),
                         command=self._on_clear, bg="#E74C3C", fg="white", width=10)
         clear_btn.pack(side="left", padx=10)
     
-        # Nút trò chơi mới
         new_game_btn = Button(controls_frame, text="Trò chơi mới", font=("Arial", 12),
                             command=self._on_new_game, bg="#27AE60", fg="white", width=12)
         new_game_btn.pack(side="left", padx=10)
@@ -271,7 +249,6 @@ class GameScreen:
             minutes, seconds = divmod(int(elapsed_time), 60)
             self.timer_var.set(f"Thời gian: {minutes:02d}:{seconds:02d}")
         
-        # Cập nhật mỗi giây
         self.master.after(1000, self._update_timer)
     
     def _on_back(self):
@@ -293,29 +270,23 @@ class GameScreen:
         instructions_window.geometry("500x600")
         instructions_window.resizable(False, False)
         
-        # Cấu hình cửa sổ popup
         instructions_window.configure(bg=self.bg_color)
         
-        # Làm cho hộp thoại modal
         instructions_window.transient(self.master)
         instructions_window.grab_set()
         
-        # Căn giữa cửa sổ
         instructions_window.geometry("+%d+%d" % (
             self.master.winfo_rootx() + self.master.winfo_width()//2 - 250,
             self.master.winfo_rooty() + self.master.winfo_height()//2 - 250
         ))
         
-        # Tiêu đề
         Label(instructions_window, text="HƯỚNG DẪN CHƠI", 
              font=("Arial", 14, "bold"),
              bg=self.bg_color, fg=self.fg_color).pack(anchor="center", pady=10)
         
-        # Khung nội dung có thanh cuộn
         content_frame = Frame(instructions_window, bg=self.bg_color)
         content_frame.pack(fill="both", expand=True, padx=20, pady=10)
         
-        # Thông tin lưới
         grid_info = "1-9" if self.grid_size == 9 else "1-16"
         box_info = "3×3" if self.grid_size == 9 else "4×4"
         
@@ -347,14 +318,12 @@ class GameScreen:
                                    wraplength=460)
         instructions_content.pack(anchor="w", pady=5)
         
-        # Mã màu
         legend_frame = Frame(content_frame, bg=self.bg_color, pady=5)
         legend_frame.pack(fill="x")
         
         Label(legend_frame, text="MÃ MÀU:", font=("Arial", 10, "bold"),
              bg=self.bg_color, fg=self.fg_color).pack(anchor="w")
         
-        # Tạo mẫu màu với nhãn
         color_samples = [
             ("Ô gốc", self.original_cell_color),
             ("Số đúng", self.success_color),
@@ -372,12 +341,10 @@ class GameScreen:
             Label(sample_frame, text=label_text, font=("Arial", 9),
                  bg=self.bg_color, fg=self.fg_color).pack(side="left")
         
-        # Nút đóng
         close_button = Button(instructions_window, text="Đóng", font=("Arial", 10, "bold"),
                             command=instructions_window.destroy, bg="#3498DB", fg="white", width=10)
         close_button.pack(pady=15)
     
-    # Các phương thức giao diện để kết nối với controller
     def set_controller(self, controller):
         """Thiết lập controller cho view này"""
         self.controller = controller
@@ -395,7 +362,6 @@ class GameScreen:
                     self.cell_vars[i][j].set("")
                     cell.config(bg="white", state="normal")
                 else:
-                    # Với lưới 16x16, sử dụng chữ cái cho 10-16
                     if self.grid_size == 16 and value > 9:
                         self.cell_vars[i][j].set(chr(ord('A') + value - 10))
                     else:
@@ -424,22 +390,18 @@ class GameScreen:
         """Hiển thị thông báo lỗi"""
         self.update_status(f"LỖI: {message}", is_error=True)
         
-        # Tạo cửa sổ thông báo tự động đóng
         error_window = Toplevel(self.master)
         error_window.title(title)
         error_window.geometry("300x100")
         error_window.resizable(False, False)
         
-        # Căn giữa cửa sổ
         error_window.geometry("+%d+%d" % (
             self.master.winfo_rootx() + self.master.winfo_width()//2 - 150,
             self.master.winfo_rooty() + self.master.winfo_height()//2 - 50
         ))
         
-        # Thêm thông báo
         Label(error_window, text=message, wraplength=280, pady=10).pack(expand=True)
         
-        # Tự động đóng sau 1.5 giây
         error_window.after(1500, error_window.destroy)
 
     def show_success(self, completion_time=None):
@@ -470,70 +432,56 @@ class GameScreen:
         else:
             self.status_label.config(fg=self.fg_color)
         
-        # Tự động đặt lại trạng thái sau 3 giây
         self.master.after(3000, lambda: self.status_var.set("Sẵn sàng. Bắt đầu điền số vào các ô trống."))
         self.master.after(3000, lambda: self.status_label.config(fg=self.fg_color))
     
-    # Các phương thức xử lý sự kiện
     def _on_cell_focus(self, position):
         """Xử lý khi ô được focus"""
         if not hasattr(self, 'controller'):
             return
             
         row, col = position
-        # Tô sáng các ô liên quan
         box_size = 3 if self.grid_size == 9 else 4
         
         for i in range(self.grid_size):
             for j in range(self.grid_size):
-                # Đặt lại các ô không đặc biệt
                 if (i, j) not in self.original_cells and self.controller.model.board[i][j] == 0:
                     self.highlight_cell(i, j, "white")
                 
-                # Tô sáng các ô liên quan
                 if (i == row or j == col or 
                     (i//box_size == row//box_size and j//box_size == col//box_size)) and (i, j) != (row, col):
                     if (i, j) not in self.original_cells and self.controller.model.board[i][j] == 0:
-                        self.highlight_cell(i, j, "#F8F8F8")  # Xám rất nhạt
+                        self.highlight_cell(i, j, "#F8F8F8")  
 
     def _on_cell_input(self, event, position):
         """Xử lý khi người dùng nhập vào ô"""
         if hasattr(self, 'controller'):
             row, col = position
             
-            # Bỏ qua nếu đây là ô gốc
             if (row, col) in self.original_cells:
                 return
             
-            # Lấy giá trị
             value = self.cell_vars[row][col].get()
             
-            # Xử lý backspace/delete
             if not value and event.keysym in ('BackSpace', 'Delete'):
                 self.controller.clear_cell(row, col)
                 return
             
-            # Với lưới 16x16, xử lý chữ cái A-G cho giá trị 10-16
             if self.grid_size == 16 and value.upper() in "ABCDEFG":
-                # Chuyển đổi A-G thành 10-16
                 num_val = ord(value.upper()) - ord('A') + 10
                 self.cell_vars[row][col].set(value.upper())
                 self.controller.make_move(row, col, num_val)
                 return
             
-            # Lọc đầu vào không phải số
             if not value.isdigit() or int(value) == 0:
                 self.controller.clear_cell(row, col)
                 return
             
-            # Kiểm tra giới hạn số dựa vào kích thước lưới
             max_value = self.grid_size
             if int(value) > max_value:
-                # Nếu người dùng nhập số lớn hơn kích thước lưới, chỉ lấy chữ số cuối cùng
                 value = value[-1]
                 self.cell_vars[row][col].set(value)
             
-            # Thực hiện nước đi
             self.controller.make_move(row, col, int(value))
     
     def _on_hint(self):
@@ -551,10 +499,8 @@ class GameScreen:
         if not hasattr(self, 'controller'):
             return
     
-        # Lấy thuật toán được chọn
         algorithm = self.algorithm_var.get()
     
-        # Gọi phương thức giải trong controller
         self.controller.solve_with_algorithm(algorithm)
     
     def _on_clear(self):
@@ -569,35 +515,28 @@ class GameScreen:
         Args:
             metrics: Từ điển chứa các thông số hiệu suất của thuật toán
         """
-        # Tạo cửa sổ mới
         comparison_window = Toplevel(self.master)
         comparison_window.title("Kết quả thuật toán")
         comparison_window.geometry("800x600")
         comparison_window.resizable(True, True)
     
-        # Cấu hình của sổ
         comparison_window.configure(bg=self.bg_color)
     
-        # Tạo frame chứa thông tin
         info_frame = Frame(comparison_window, bg=self.bg_color, padx=20, pady=20)
         info_frame.pack(fill="both", expand=True)
     
-        # Hiển thị tên thuật toán
         algorithm_name = self.algorithm_var.get()
         Label(info_frame, text=f"Thuật toán: {algorithm_name}", 
               font=("Arial", 16, "bold"), bg=self.bg_color, fg=self.fg_color).pack(pady=10)
     
-        # Hiển thị kết quả
         result_text = "Thành công" if metrics['is_solved'] else "Không tìm thấy lời giải"
         result_color = "#27AE60" if metrics['is_solved'] else "#E74C3C"
         Label(info_frame, text=f"Kết quả: {result_text}", 
               font=("Arial", 14, "bold"), bg=self.bg_color, fg=result_color).pack(pady=5)
     
-        # Hiển thị các thông số
         metrics_frame = Frame(info_frame, bg=self.bg_color)
         metrics_frame.pack(fill="x", pady=10)
     
-        # Tạo bảng thông số
         columns = ("Thông số", "Giá trị")
         metrics_table = ttk.Treeview(metrics_frame, columns=columns, show="headings", height=6)
         metrics_table.heading("Thông số", text="Thông số")
@@ -605,7 +544,6 @@ class GameScreen:
         metrics_table.column("Thông số", width=300)
         metrics_table.column("Giá trị", width=300)
     
-        # Thêm dữ liệu vào bảng
         metrics_table.insert("", "end", values=("Thời gian thực thi (giây)", f"{metrics['execution_time']:.6f}"))
         metrics_table.insert("", "end", values=("Số trạng thái đã khám phá", f"{metrics['states_explored']}"))
         metrics_table.insert("", "end", values=("Số trạng thái tối đa trong bộ nhớ", f"{metrics['max_states_in_memory']}"))
@@ -615,31 +553,25 @@ class GameScreen:
     
         metrics_table.pack(fill="x", padx=10, pady=10)
     
-        # Tạo biểu đồ so sánh
         chart_frame = Frame(info_frame, bg=self.bg_color)
         chart_frame.pack(fill="both", expand=True, pady=10)
     
-        # Tạo biểu đồ cột cho thời gian và số trạng thái
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
     
-        # Biểu đồ thời gian
         ax1.bar(['Thời gian (s)'], [metrics['execution_time']], color='#3498DB')
         ax1.set_title('Thời gian thực thi')
         ax1.set_ylabel('Giây')
     
-        # Biểu đồ số trạng thái
         ax2.bar(['Trạng thái đã khám phá', 'Trạng thái tối đa trong bộ nhớ'], 
                 [metrics['states_explored'], metrics['max_states_in_memory']], 
                 color=['#9B59B6', '#E67E22'])
         ax2.set_title('Không gian trạng thái')
         ax2.set_ylabel('Số lượng')
     
-        # Hiển thị biểu đồ trong tkinter
         canvas = FigureCanvasTkAgg(fig, master=chart_frame)
         canvas.draw()
         canvas.get_tk_widget().pack(fill="both", expand=True)
     
-        # Thêm nút đóng
         Button(comparison_window, text="Đóng", font=("Arial", 12, "bold"),
                command=comparison_window.destroy, bg="#3498DB", fg="white", width=10).pack(pady=15)
 
