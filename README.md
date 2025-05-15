@@ -183,7 +183,7 @@ Dự án này nhằm mục đích:
    - Tỷ lệ thành công
    - Chất lượng giải pháp
    - Độ tin cậy
-![Kết quả SOSANH](Anh/compar.gif)
+![Kết quả SOSANH](Anh/Compar.gif)
 
 ### Hướng Dẫn Sử Dụng
 
