@@ -185,6 +185,8 @@ Dự án này nhằm mục đích:
    - Độ tin cậy
 ![Kết quả SOSANH](Anh/Compar.gif)
 
+- ** Reinforcement Learning mỗi lần học 9x9 rất lâu và tốn tài nguyên nên giải được cần thời gian và tài nguyên rất lớn
+- ![Kết quả SOSANH](Anh/Reinforcement.gif)
 ### Hướng Dẫn Sử Dụng
 
 #### Yêu Cầu Hệ Thống
@@ -268,7 +270,7 @@ Dự án này nhằm mục đích:
    - `config.py`: Cấu hình ứng dụng
 
 #### Cách Sử Dụng Chương Trình
-![Demo 8-puzzer](Huongdan.gif)
+- ![Demo](Anh/Huongdan.gif)
 1. **Khởi Động**
    - Chạy file `DO_AN_MONHOC.py`
    - Chương trình sẽ hiển thị màn hình chọn cấu hình
