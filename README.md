@@ -170,8 +170,10 @@ Dự án này nhằm mục đích:
 
 #### Hiệu Suất Các Thuật Toán
 1. **Thời Gian Thực Thi**
-2. **Sử Dụng Tài Nguyên**
-3. **Độ Chính Xác**
+2. **Số trạng thái đã khám phá**
+3. **Số trạng thái tối đa trong bộ nhớ**
+4. **Giá trị heuristic (h) và số bước (g)**
+
 ![Kết quả SOSANH](Anh/Compar.gif)
 
 - ** Reinforcement Learning mỗi lần học 9x9 rất lâu và tốn tài nguyên nên giải được cần thời gian và tài nguyên rất lớn
