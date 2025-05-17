@@ -170,19 +170,8 @@ Dự án này nhằm mục đích:
 
 #### Hiệu Suất Các Thuật Toán
 1. **Thời Gian Thực Thi**
-   - So sánh thời gian giải quyết
-   - Phân tích độ phức tạp
-   - Đánh giá khả năng mở rộng
-
 2. **Sử Dụng Tài Nguyên**
-   - Bộ nhớ sử dụng
-   - CPU utilization
-   - Hiệu quả tính toán
-
 3. **Độ Chính Xác**
-   - Tỷ lệ thành công
-   - Chất lượng giải pháp
-   - Độ tin cậy
 ![Kết quả SOSANH](Anh/Compar.gif)
 
 - ** Reinforcement Learning mỗi lần học 9x9 rất lâu và tốn tài nguyên nên giải được cần thời gian và tài nguyên rất lớn
